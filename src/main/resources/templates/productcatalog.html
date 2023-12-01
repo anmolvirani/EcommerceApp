@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Catalog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #view-cart-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Product Catalog</h1>
+    <div id="product-list">
+        <!-- Product data will be displayed here -->
+    </div>
+
+    <button id="view-cart-button" onclick="redirectToCart()">View Cart</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get a reference to the product list container
+            var productList = document.getElementById("product-list");
+
+            // Make a GET request to the /api/products/ endpoint
+            fetch("/api/products/")
+                .then(function (response) {
+                    return response.json(); // Parse the response as JSON
+                })
+                .then(function (data) {
+                    // Iterate through the product data and display it
+                    data.forEach(function (product) {
+                        var productItem = document.createElement("div");
+                        var productName = product.name;
+                        productItem.innerHTML = `
+                            <h3>${product.name}</h3>
+                            <p>Price: $${product.price}</p>
+                            <p>Description: ${product.description}</p>
+                            <img src="${product.imageUrl}" alt="${product.name}" width="100">
+                            <button onclick='addToCart("${product.name}",${product.price})'>Add to cart</button>   
+                        `;
+                        productList.appendChild(productItem);
+                    });
+                })
+                .catch(function (error) {
+                    console.error("Error fetching product data: " + error);
+                });
+        });
+
+        function addToCart(productName, price) {
+            var cartItem = {
+                productName: productName,
+                price: price
+            };
+
+            // Add the item to the cart
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Set the content type based on your data format
+                    // You may need to include additional headers such as authentication tokens
+                },
+                body: JSON.stringify(cartItem) // Convert data to JSON format
+            };
+
+            fetch("/api/cart/add", options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                })
+                .then(data => {
+                    // Handle the response data
+                    console.log('Response data:', data);
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.error('Error:', error);
+                });
+            // Update the cart display
+            // updateCartDisplay();
+        }
+
+        function redirectToCart() {
+            window.location.href = '/api/viewCart';
+        }
+
+    </script>
+</body>
+
+</html>

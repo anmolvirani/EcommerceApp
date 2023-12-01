@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        #cart-items {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .cart-item {
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        .cart-item img {
+            max-width: 100px;
+            margin-right: 10px;
+        }
+
+        #back-to-catalog {
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Shopping Cart</h1>
+
+    <div id="cart-items">
+        <!-- Cart items will be dynamically added here -->
+
+    </div>
+
+    <div id="total">
+
+    </div>
+
+    <a href="/api/productCatalog" id="back-to-catalog">Back to Catalog</a>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch cart items from the API
+            fetch('/api/cart/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json(); // Parse the response as JSON
+                })
+                .then(cartItems => {
+                    // Display the cart items on the page
+                    displayCartItems(cartItems);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            // Function to display cart items on the page
+            function displayCartItems(cartItems) {
+                var cartItemsContainer = document.getElementById('cart-items');
+                var totalContainer = document.getElementById('total');
+                if (cartItems.length === 0) {
+                    cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+                    totalContainer.innerHTML = "<p>Total: $0.00</p>";
+                } else {
+                    var total = 0;
+                    cartItems.forEach(item => {
+                        var cartItemDiv = document.createElement('div');
+                        cartItemDiv.classList.add('cart-item');
+
+                        // var productImage = document.createElement('img');
+                        // productImage.src = item.image; // Assuming each item has an 'image' property
+                        // productImage.alt = item.name; // Assuming each item has a 'name' property
+
+                        var itemDetails = document.createElement('div');
+                        itemDetails.innerHTML = `<h3>${item.productName}</h3><p>Quantity: ${item.quantity}</p><p>Price: $${item.price.toFixed(2)}</p>`;
+
+                        var deleteButton = document.createElement('button');
+                        deleteButton.innerText = 'Delete From Cart';
+                        deleteButton.addEventListener('click', function () {
+                            // Call the deleteFromCart function when the button is clicked
+                            deleteFromCart(item.id); // Assuming each item has a 'productId' property
+                        });
+
+                        // cartItemDiv.appendChild(productImage);
+                        cartItemDiv.appendChild(itemDetails);
+                        cartItemDiv.appendChild(deleteButton);
+                        cartItemsContainer.appendChild(cartItemDiv);
+
+                        total += item.price * item.quantity;
+                    });
+                    totalContainer.innerHTML = `<p>Total: $${total.toFixed(2)}</p>`;
+
+                }
+            }
+            function deleteFromCart(productId) {
+                // Make a DELETE request to the API endpoint for deleting the specified product
+                fetch(`/api/cart/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include any other headers if needed
+                    },
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        // Assuming a successful deletion response does not return data
+                        return response.text();
+                    })
+                    .then(data => {
+                        // Handle the success response, if needed
+                        console.log(`Product with ID ${productId} deleted from the cart.`);
+                        // You may update the UI or perform additional actions based on the response
+                    })
+                    .catch(error => {
+                        // Handle errors
+                        console.error('Error:', error);
+                    });
+            }
+        });
+
+    </script>
+</body>
+
+</html>
