@@ -19,11 +19,27 @@
             border: none;
             cursor: pointer;
         }
+
+        #logout-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
     <h1>Product Catalog</h1>
+    
+    <button id="logout-button" onclick="logout()">Logout</button>
+
+    </div>
+
     <div id="product-list">
         <!-- Product data will be displayed here -->
     </div>
@@ -95,6 +111,16 @@
 
         function redirectToCart() {
             window.location.href = '/api/viewCart';
+        }
+
+        function logout()
+        {
+            window.location.href = '/api/logout';
+        }
+
+        function login()
+        {
+            window.location.href = '/api/generate-otp';
         }
 
     </script>
