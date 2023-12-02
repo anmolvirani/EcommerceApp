@@ -39,12 +39,12 @@ public class CartItemController {
         String username = session.getAttribute("username").toString();
 
         Person user = userRepository.findByUsername(username);
-        if (cartItemRepository.findByProductName(cartItem.getProductName()) == null) {
+        if (cartItemRepository.findByProductNameAndPerson(cartItem.getProductName(),user) == null) {
             cartItem.setQuantity(1);
             cartItem.setPerson(user);
             cartItemRepository.save(cartItem);
         } else {
-            CartItem cartItem2 = cartItemRepository.findByProductName(cartItem.getProductName());
+            CartItem cartItem2 = cartItemRepository.findByProductNameAndPerson(cartItem.getProductName(),user);
             cartItem2.setQuantity(cartItem2.getQuantity() + 1);
             cartItemRepository.save(cartItem2);
         }
