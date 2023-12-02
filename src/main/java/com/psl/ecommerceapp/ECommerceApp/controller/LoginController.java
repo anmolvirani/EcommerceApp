@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.psl.ecommerceapp.ECommerceApp.entity.Person;
+import com.psl.ecommerceapp.ECommerceApp.model.RegularLoginRequest;
 import com.psl.ecommerceapp.ECommerceApp.model.UserLoginRequest;
 import com.psl.ecommerceapp.ECommerceApp.repository.PersonRepository;
 import com.psl.ecommerceapp.ECommerceApp.service.EmailService;
@@ -62,6 +63,28 @@ public class LoginController {
 
         return "login";
 
+    }
+
+    @PostMapping("/regularLoginProcess")
+    public String regularLoginProcess(@ModelAttribute RegularLoginRequest loginRequest, HttpSession session) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
+
+        Person user = personRepository.findByUsernameAndPassword(username, password);
+
+        if (user != null) {
+            session.setAttribute("username", username);
+            return "redirect:/api/productCatalog";
+        } else {
+            return "failedlogin";
+        }
+
+    }
+
+    @GetMapping("/regularLogin")
+    public String regularProcess()
+    {
+        return "loginwithoutotp";
     }
 
 }
