@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Login</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <h2>Login</h2>
@@ -22,6 +24,13 @@
             </div>
             <button type="submit">Login</button>
         </form>
+        <button id="forgotPassword" onclick="forgotPasswordRedirect()">Forgot Password</button>
     </div>
+    <script>
+        function forgotPasswordRedirect() {
+            window.location.href = "/api/forgotpassword";
+        }
+    </script>
 </body>
+
 </html>
