@@ -37,6 +37,19 @@
             color: #fff;
             padding: 10px;
         }
+
+        .delete-button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 
@@ -94,6 +107,7 @@
                         itemDetails.innerHTML = `<h3>${item.productName}</h3><p>Quantity: ${item.quantity}</p><p>Price: $${item.price.toFixed(2)}</p>`;
 
                         var deleteButton = document.createElement('button');
+                        deleteButton.className='delete-button';
                         deleteButton.innerText = 'Delete From Cart';
                         deleteButton.addEventListener('click', async function () {
                             // Call the deleteFromCart function when the button is clicked
