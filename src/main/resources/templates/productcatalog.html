@@ -30,6 +30,36 @@
             border: none;
             cursor: pointer;
         }
+
+        #my-orders-button {
+            position: fixed;
+            top: 10px;
+            left: 80px;
+            padding: 10px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Style for the "Add to Cart" button */
+        .add-to-cart-button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .add-to-cart-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 
@@ -45,6 +75,8 @@
     </div>
 
     <button id="view-cart-button" onclick="redirectToCart()">View Cart</button>
+    <button id="my-orders-button" onclick="redirectToOrders()">My Orders</button>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Get a reference to the product list container
@@ -65,7 +97,7 @@
                             <p>Price: $${product.price}</p>
                             <p>Description: ${product.description}</p>
                             <img src="${product.imageUrl}" alt="${product.name}" width="100">
-                            <button onclick='addToCart("${product.name}",${product.price})'>Add to cart</button>   
+                            <button class="add-to-cart-button" onclick='addToCart("${product.name}",${product.price})'>Add to cart</button>   
                         `;
                         productList.appendChild(productItem);
                     });
@@ -121,6 +153,11 @@
         function login()
         {
             window.location.href = '/api/generate-otp';
+        }
+
+        function redirectToOrders()
+        {
+            window.location.href = '/api/orderList';
         }
 
     </script>
