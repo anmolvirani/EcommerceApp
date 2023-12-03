@@ -109,8 +109,14 @@
                 const cancelOrderButton = document.createElement('button');
                 cancelOrderButton.textContent = 'Cancel Order';
                 cancelOrderButton.onclick = function () {
+                // Show a confirmation popup
+                const isConfirmed = window.confirm('Are you sure about cancelling this order?');
+
+                // If the user clicks 'OK' in the confirmation popup, proceed to cancel the order
+                if (isConfirmed) {
                     cancelOrder(order.orderId);
-                };
+                }
+            };
                 actionsCell.appendChild(cancelOrderButton);
             });
         }
