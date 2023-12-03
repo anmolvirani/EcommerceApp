@@ -23,8 +23,5 @@ public class CartItem {
     @ManyToOne
     private Person person;
 
-    @ManyToOne
-    private CartOrder order;
-    
     // Getters and setters
 }

@@ -27,16 +27,7 @@
             margin-right: 10px;
         }
 
-        #back-to-catalog {
-            margin-top: 20px;
-            display: block;
-            text-align: center;
-            text-decoration: none;
-            background-color: #3498db;
-            color: #fff;
-            padding: 10px;
-        }
-
+        #back-to-catalog,
         #confirm-order {
             margin-top: 20px;
             display: block;
@@ -62,7 +53,7 @@
     </div>
 
     <a href="/api/productCatalog" id="back-to-catalog">Back to Catalog</a>
-    <a href="/api/confirmOrder" id="confirm-order">Confirm Order</a>
+    <a href="/api/payment" id="confirm-order">Confirm Order</a>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -104,9 +95,11 @@
 
                         var deleteButton = document.createElement('button');
                         deleteButton.innerText = 'Delete From Cart';
-                        deleteButton.addEventListener('click', function () {
+                        deleteButton.addEventListener('click', async function () {
                             // Call the deleteFromCart function when the button is clicked
-                            deleteFromCart(item.id); // Assuming each item has a 'productId' property
+                            await deleteFromCart(item.id); // Assuming each item has a 'productId' property
+                            // Refresh the cart items after deletion
+                            await refreshCartItems();
                         });
 
                         // cartItemDiv.appendChild(productImage);
@@ -117,34 +110,38 @@
                         total += item.price * item.quantity;
                     });
                     totalContainer.innerHTML = `<p>Total: $${total.toFixed(2)}</p>`;
-
                 }
             }
-            function deleteFromCart(productId) {
-                // Make a DELETE request to the API endpoint for deleting the specified product
-                fetch(`/api/cart/${productId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Include any other headers if needed
-                    },
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        // Assuming a successful deletion response does not return data
-                        return response.text();
-                    })
-                    .then(data => {
-                        // Handle the success response, if needed
-                        console.log(`Product with ID ${productId} deleted from the cart.`);
-                        // You may update the UI or perform additional actions based on the response
-                    })
-                    .catch(error => {
-                        // Handle errors
-                        console.error('Error:', error);
+
+            // Function to delete a product from the cart
+            async function deleteFromCart(productId) {
+                try {
+                    const response = await fetch(`/api/cart/${productId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // Include any other headers if needed
+                        },
                     });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    // Assuming a successful deletion response does not return data
+                    const data = await response.text();
+                    console.log(data);
+                } catch (error) {
+                    // Handle errors
+                    console.error('Error:', error);
+                }
+            }
+
+            // Function to refresh cart items after deletion
+            async function refreshCartItems() {
+                const response = await fetch('/api/cart/');
+                const cartItems = await response.json();
+                displayCartItems(cartItems);
             }
         });
 

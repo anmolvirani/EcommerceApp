@@ -9,4 +9,6 @@ import com.psl.ecommerceapp.ECommerceApp.entity.Person;
 
 public interface OrderRepository extends JpaRepository<CartOrder, Long> {
     List<CartOrder> findByPerson(Person person);
+
+    List<CartOrder> deleteByPerson(Person person);
 }

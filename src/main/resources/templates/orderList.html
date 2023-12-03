@@ -35,12 +35,16 @@
             color: #fff;
         }
 
-        button{
+        button {
             padding: 10px;
             background-color: #2ecc71;
             color: #fff;
             border: none;
             cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #27ae60;
         }
     </style>
 </head>
@@ -54,6 +58,7 @@
                 <th>Order ID</th>
                 <th>Customer Name</th>
                 <th>Cart Items</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody id="orderTableBody"></tbody>
@@ -99,7 +104,34 @@
                 });
 
                 cartItemsCell.appendChild(itemList);
+
+                const actionsCell = row.insertCell();
+                const cancelOrderButton = document.createElement('button');
+                cancelOrderButton.textContent = 'Cancel Order';
+                cancelOrderButton.onclick = function () {
+                    cancelOrder(order.orderId);
+                };
+                actionsCell.appendChild(cancelOrderButton);
             });
+        }
+
+        // Function to cancel an order
+        async function cancelOrder(orderId) {
+            try {
+                const response = await fetch(`/api/order/${orderId}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error cancelling order: ${response.status}`);
+                }
+
+                // Reload the order table after cancellation
+                document.getElementById('orderTableBody').innerHTML = '';
+                populateOrderTable();
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
         // Call the function to populate the order table
